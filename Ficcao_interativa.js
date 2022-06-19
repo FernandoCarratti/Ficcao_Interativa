@@ -163,7 +163,7 @@ function procurarCombustivel(){
         }
         
         if(opcao == 1){
-            console.log(`Para lutar contra os monstrengos você terá que vencer pelo 2 rodadas em um dado D20.`);
+            console.log(`Para lutar contra os monstrengos você terá que tirar pelo menos 7 em 2 rodadas em um dado D20.`);
             console.log();
 
             let vitoriaJogador = 0;
@@ -174,7 +174,7 @@ function procurarCombustivel(){
                 console.clear();
                 let dadoJogador = Math.ceil(Math.random() * 20);
                 let dadoMonstrengo = Math.ceil(Math.random() * 20);
-                if (dadoJogador > dadoMonstrengo){
+                if (dadoJogador >= 7){
                     vitoriaJogador++;
                 }else{
                     vitoriaMonstrengo++;                    
@@ -240,7 +240,7 @@ function procurarCombustivel(){
         }
         
         if(opcao == 1){
-            console.log(`Para lutar contra os monstrengos você terá que vencer pelo 2 rodadas em um dado D20.`);
+            console.log(`Para lutar contra os monstrengos você terá que tirar pelo menos 7 em 2 rodadas em um dado D20.`);
             console.log();            
 
             let vitoriaJogador = 0;
@@ -251,7 +251,7 @@ function procurarCombustivel(){
                 console.clear();
                 let dadoJogador = Math.ceil(Math.random() * 20);
                 let dadoMonstrengo = Math.ceil(Math.random() * 20);
-                if (dadoJogador > dadoMonstrengo){
+                if (dadoJogador >= 7){
                     vitoriaJogador++;
                 }else{
                     vitoriaMonstrengo++;                    
@@ -332,7 +332,7 @@ function procurarMetal(){
         if (opcao == 1){
             prompt();
             console.clear();
-            console.log(`Para lutar contra esse monstro você terá que vencer pelo 3 de 5 rodadas em um dado D20.`);
+            console.log(`Para lutar contra esse monstro você terá que tirar pelo menos 7 em 4 rodadas com um dado D20.`);
             console.log();
 
             let vitoriaJogador = 0;
@@ -342,7 +342,7 @@ function procurarMetal(){
                 prompt('Pressione ENTER para jogar o dado.')
                 let dadoJogador = Math.ceil(Math.random() * 20);
                 let dadoMonstro = Math.ceil(Math.random() * 20);
-                if (dadoJogador > dadoMonstro){
+                if (dadoJogador >= 7){
                     vitoriaJogador++;
                 }else{
                     vitoriaMonstro++;                    
@@ -411,7 +411,7 @@ function procurarMetal(){
             console.clear();
 
         if (opcao == 1){
-            console.log(`Para lutar contra esse monstro você terá que vencer pelo 3 de 5 rodadas em um dado D20.`);
+            console.log(`Para lutar contra esse monstro você terá que tirar pelo menos 7 em 4 rodadas com um dado D20.`);
             console.log();
 
             let vitoriaJogador = 0;
@@ -421,7 +421,7 @@ function procurarMetal(){
                 prompt('Pressione ENTER para jogar o dado.')
                 let dadoJogador = Math.ceil(Math.random() * 20);
                 let dadoMonstro = Math.ceil(Math.random() * 20);
-                if (dadoJogador > dadoMonstro){
+                if (dadoJogador >= 7){
                     vitoriaJogador++;
                 }else{
                     vitoriaMonstro++;                    
@@ -503,7 +503,7 @@ function procurarComida(){
         console.clear();
 
         if (opcao == 1){
-            console.log(`Para lutar contra o estranho animal você terá que vencer pelo 2 rodadas em um dado D20.`);
+            console.log(`Para lutar contra o estranho animal você terá que tirar acima de 7 em 2 rodadas com um dado D20.`);
             console.log();
 
             let vitoriaJogador = 0;
@@ -513,7 +513,7 @@ function procurarComida(){
                 prompt('Pressione ENTER para jogar o dado.')
                 let dadoJogador = Math.ceil(Math.random() * 20);
                 let dadoAnimal = Math.ceil(Math.random() * 20);
-                if (dadoJogador > dadoAnimal){
+                if (dadoJogador >= 7){
                     vitoriaJogador++;
                 }else{
                     vitoriaAnimal++;                    
@@ -587,7 +587,7 @@ function procurarComida(){
         }
         console.clear();
         if(opcao == 1){
-            console.log(`Para lutar contra esse estrano animal você terá que vencer pelo 2 rodadas em um dado D20.`);
+            console.log(`Para lutar contra o estranho animal você terá que tirar acima de 7 em 2 rodadas com um dado D20.`);
             console.log();
 
             let vitoriaJogador = 0;
@@ -597,7 +597,7 @@ function procurarComida(){
                 prompt('Pressione ENTER para jogar o dado.')
                 let dadoJogador = Math.ceil(Math.random() * 20);
                 let dadoAnimal = Math.ceil(Math.random() * 20);
-                if (dadoJogador > dadoAnimal){
+                if (dadoJogador >= 7){
                     vitoriaJogador++;
                 }else{
                     vitoriaAnimal++;                    
