@@ -1,6 +1,8 @@
 const prompt = require('prompt-sync')();
 const color = require('colors');
 
+let countVoltar = 0;
+let countSinalRadio = 0;
 
 inicio:
 while (true){
@@ -42,6 +44,8 @@ const heroi ={
     radio: 0,
     dias: 0,
     horas: 0,
+    horasDescanso: 0,
+    horasTrabalhadas: 0,
     pedras: [],
     materialOrganico: [],
     tempo: function(horas){
@@ -53,7 +57,7 @@ const heroi ={
         }
     },
     dormir: function(descanso){
-        if (this.horas >= 18){
+        if (this.horasTrabalhadas >= 18){
             console.log(`Você precisa descansar ou vai acabar desmaiando`);
             console.log();
             console.log(`[1] Descanse por 6 horas.`);
@@ -61,11 +65,15 @@ const heroi ={
             console.log();
             descanso = +prompt(`Que tal armar acampamento e descansar um pouco: `);
             if (descanso == 1){
+                console.log(`Você descansou por 6 horas. Já pode voltar ao trabalho.`)
                 this.horas += 6;
+                this.horasTrabalhadas = 0;
+                if (this.xp > 9){
                 this.xp += 1;
+                }
                 return true;
             }else if (descanso == 2){
-                if (this.horas >= 22){
+                if (this.horasTrabalhadas >= 22){
                     heroi.desmaiar();
                 }else{
                     return false;
@@ -74,7 +82,7 @@ const heroi ={
         }   
     },
     desmaiar: function(){
-        if (this.dormir(descanso) != 1 && this.horas > 20){
+        if (this.dormir != 1 && this.horasTrabalhadas > 20){
             console.log(`Você desmaiou! Não dá pra ficar alerta por tanto tempo sem descanso.`);
             prompt(`Pressione ENTER para retomar a missão.`);
             this.horas += 6;
@@ -84,15 +92,15 @@ const heroi ={
     },
     coletarPedras: function(pedra){
         this.pedras.push(pedra);
-        if (this.pedras.length == 3){
-            this.radio += 1;          
+        if (this.pedras.length == 2){
+            this.radio += 2.5;          
             this.pedras = [];
         }
     },
     coletarOrganico: function(organico){
         this.materialOrganico.push(organico);
-        if (this.materialOrganico.length == 3){
-            this.combustivel += 1;
+        if (this.materialOrganico.length == 2){
+            this.combustivel += 2.5;
             this.materialOrganico = [];
         }
     },
@@ -107,15 +115,22 @@ const heroi ={
 
 function verificarStatus(){
     console.log(`${heroi.nome}`.cyan);
+    if (heroi.xp > 10){
+        heroi.xp = 10;
+    }
     console.log(`Vida: ${heroi.xp * 10}%`.cyan);
     if (heroi.xp <= 4){
         console.log(`Se alimente e descanse ou você pode ter um desmaio e até mesmo morrer de fome.`.yellow)
     }
+    if (heroi.combustivel > 10){
+        heroi.combustivel = 10;
+    }
     console.log(`Combustivel: ${heroi.combustivel * 10}%`.cyan);
     console.log(`Rádio: ${heroi.radio * 10}%`.cyan)
     console.log(`Tempo: ${heroi.dias} dias e ${heroi.horas} horas`.cyan);
-    if (heroi.horas >= 18){
-        console.log(`O descanso é muito importante! Você já está trabalhando a ${heroi.horas} horas sem parar.`.yellow)
+    console.log(`Horas Trabalhadas: ${heroi.horasTrabalhadas}`.cyan);
+    if (heroi.horasTrabalhadas >= 18){
+        console.log(`O descanso é muito importante! Você já está trabalhando a ${heroi.horasTrabalhadas} horas sem parar.`.yellow)
     }
     
 }
@@ -143,17 +158,16 @@ function inicioMissao(){
     }
     heroi.dias += 2;
 }
-
+let materialOrganico = 0;
 function procurarCombustivel(){
-    if (heroi.materialOrganico.length == 0){
+    materialOrganico++
+    if (materialOrganico == 1){
         console.log(`O melhor lugar para procurar por material orgânico decomposto parece ser um dos varios pântanos que é possivel ver no vale próximo de onde a nave caiu. Mas alguns perigos podem estar a sua frente.`);
         console.log();
         prompt('Pressione ENTER para recolher o composto orgânico.');
         console.log();
         console.log(`Ao chegar próximo a um dos pântanos, você se depara com pequenos animais de aparência até que "fofinha" em volta, mas logo que reparam a sua presença, se transformam em "pequenos demonios sanguinários".`);
-        console.log();
-        prompt(`ENTER`);
-        console.clear();
+        console.log();        
         console.log(`[1] Enfrentar uma orda de monstrengos.`);
         console.log(`[2] Voltar outra hora para ver se aqueles bichos já foram embora. `);
         console.log();
@@ -168,32 +182,35 @@ function procurarCombustivel(){
 
             let vitoriaJogador = 0;
             let vitoriaMonstrengo = 0;
+            prompt();
+            console.clear();
             
             for (let i = 1; i <= 3; i++){
-                prompt('Pressione ENTER para jogar o dado.')
-                console.clear();
+                prompt('Pressione ENTER para jogar o dado.');                
                 let dadoJogador = Math.ceil(Math.random() * 20);
                 let dadoMonstrengo = Math.ceil(Math.random() * 20);
-                if (dadoJogador >= 7){
+                if (dadoJogador >= 7 || dadoJogador > dadoMonstrengo){
                     vitoriaJogador++;
                 }else{
                     vitoriaMonstrengo++;                    
-                }
+                }     
                 console.log();
-                console.log(`Essa é a rodada ${i} você jogou ${dadoJogador} e o monstrengo jogou ${dadoMonstrengo}`);
-            } 
-            prompt('Pressione ENTER continuar')
-                console.clear();           
+                console.log(`Essa é a rodada ${i} você jogou ${dadoJogador} e o monstrengo jogou ${dadoMonstrengo}`);           
+            }          
+                         
             if (vitoriaJogador > vitoriaMonstrengo){
                 console.log();
                 console.log(`Você sacou o phaser e acertou uns 3 ou 4 desses bichos horrorosos. Isso já serviu de exemplo para os outros que fugiram assustados.`);
                 console.log();
-                console.log(`Você conseguiu recolher material orgânico para o preparo do combustivel, mas infelizmente você não consegue carregar tanto peso. Vai ser preciso 3 carregamentos para preparar 1 litro de combustível.`);
+                console.log(`Você conseguiu recolher material orgânico para o preparo do combustivel, mas infelizmente você não consegue carregar tanto peso. Vai ser preciso 2 carregamentos para preparar 1 litro de combustível.`);
                 console.log();
                 console.log(`Você já pode voltar para a nave.`)
                 heroi.tempo(6);
+                heroi.horasTrabalhadas += 6;
                 heroi.coletarOrganico(3);
-                heroi.xp += 1;                             
+                if (heroi.xp < 10){
+                    heroi.xp += 1;     
+                }                        
                 return 3;
             }else{
                 console.log();
@@ -218,8 +235,9 @@ function procurarCombustivel(){
                 }
             }
             
-        }else{
+        }else if (opcao == 2){
             heroi.tempo(3);
+            heroi.horasTrabalhadas += 3;
             heroi.xp -= 2;
             console.log();
             console.log(`Você está de volta a nave, mas perdeu 2 pontos de XP pela falta de coragem!`);
@@ -247,11 +265,10 @@ function procurarCombustivel(){
             let vitoriaMonstrengo = 0;
             
             for (let i = 1; i <= 3; i++){
-                prompt('Pressione ENTER para jogar o dado.');
-                console.clear();
+                prompt('Pressione ENTER para jogar o dado.');                
                 let dadoJogador = Math.ceil(Math.random() * 20);
                 let dadoMonstrengo = Math.ceil(Math.random() * 20);
-                if (dadoJogador >= 7){
+                if (dadoJogador >= 7 || dadoJogador > dadoMonstrengo){
                     vitoriaJogador++;
                 }else{
                     vitoriaMonstrengo++;                    
@@ -265,12 +282,15 @@ function procurarCombustivel(){
                 console.log();
                 console.log(`Você sacou o phaser e acertou uns 3 ou 4 desses bichos horrorosos. Isso já serviu de exemplo para os outros que fugiram assustados.`);
                 console.log();
-                console.log(`Você conseguiu recolher material orgânico para o preparo do combustivel, mas infelizmente você não consegue carregar tanto peso. Vai ser preciso 3 carregamentos para preparar 1 litro de combustível.`);
+                console.log(`Você conseguiu recolher material orgânico para o preparo do combustivel, mas infelizmente você não consegue carregar tanto peso. Vai ser preciso 2 carregamentos para preparar 1 litro de combustível.`);
                 console.log();
                 console.log(`Você já pode voltar para a nave.`)
                 heroi.tempo(6);
+                heroi.horasTrabalhadas += 6;
                 heroi.coletarOrganico(3);
-                heroi.xp += 1;                               
+                if (heroi.xp < 10){
+                heroi.xp += 1;     
+                }                          
                 return 3;
             }else{
                 console.log();
@@ -295,8 +315,9 @@ function procurarCombustivel(){
                    return 2;
                 }
             }            
-        }else{
+        }else if (opcao == 2){
             heroi.tempo(3);
+            heroi.horasTrabalhadas += 3;
             heroi.xp -= 2;
             console.log();
             console.log(`Você está de volta a nave, mas perdeu 2 pontos de XP pela falta de coragem!`); 
@@ -304,9 +325,10 @@ function procurarCombustivel(){
         }
     }
 }
-
+let pedras = 0;
 function procurarMetal(){
-    if (heroi.pedras.length == 0){
+    pedras++;
+    if (pedras == 1){
         console.log();
         console.log(`Ao olhar para o horizonte você vê montanhas rochosas longinquas e percebe um brilho diferente nas rochas dessa cadeia de montanhas.
 
@@ -332,7 +354,7 @@ function procurarMetal(){
         if (opcao == 1){
             prompt();
             console.clear();
-            console.log(`Para lutar contra esse monstro você terá que tirar pelo menos 7 em 4 rodadas com um dado D20.`);
+            console.log(`Para lutar contra esse monstro você terá que tirar pelo menos 7 em 3 rodadas com um dado D20.`);
             console.log();
 
             let vitoriaJogador = 0;
@@ -342,7 +364,7 @@ function procurarMetal(){
                 prompt('Pressione ENTER para jogar o dado.')
                 let dadoJogador = Math.ceil(Math.random() * 20);
                 let dadoMonstro = Math.ceil(Math.random() * 20);
-                if (dadoJogador >= 7){
+                if (dadoJogador >= 7 || dadoJogador > dadoMonstro){
                     vitoriaJogador++;
                 }else{
                     vitoriaMonstro++;                    
@@ -357,12 +379,15 @@ function procurarMetal(){
                 console.log(`Você sacou o phaser e ao acertar uma de suas longas pernas, percebeu que o monstro se desequilibrou. 
                 A partir daí, ficou facil... Após quebrar 9 de suas 12 pernas, assim que o bicho foi ao chão você mirou todos os tiros em sua parte mais frágil e o monstro foi derrotado.`);
                 console.log();
-                console.log(`Você conseguiu subir a montanha e recolher o que conseguia carregar de rochas, mas ainda será preciso 3 vezes mais que isso para cada grama de metal necessário.`);
+                console.log(`Você conseguiu subir a montanha e recolher o que conseguia carregar de rochas, mas ainda será preciso 2 vezes mais que isso para cada grama de metal necessário.`);
                 console.log();
                 console.log(`Ao sair daquela cadeia de montanhas você percebe que alguns pares de olhos ainda o espreitavam das profundezas da caverna...`)
                 heroi.tempo(6);
+                heroi.horasTrabalhadas += 6;
                 heroi.coletarPedras(3);
+                if (heroi.xp < 9){
                 heroi.xp += 2;
+                }
                 return 3;
             }else{
                 console.log();
@@ -387,8 +412,9 @@ function procurarMetal(){
                    return 2;
                 }
             }
-        }else{
+        }else if (opcao == 2){
             heroi.tempo(3);
+            heroi.horasTrabalhadas += 3;
             heroi.xp -= 2;
             console.log();
             console.log(`Você está de volta a nave, mas perdeu 2 pontos de XP pela falta de coragem!`);
@@ -411,7 +437,7 @@ function procurarMetal(){
             console.clear();
 
         if (opcao == 1){
-            console.log(`Para lutar contra esse monstro você terá que tirar pelo menos 7 em 4 rodadas com um dado D20.`);
+            console.log(`Para lutar contra esse monstro você terá que tirar pelo menos 7 em 3 rodadas com um dado D20.`);
             console.log();
 
             let vitoriaJogador = 0;
@@ -421,7 +447,7 @@ function procurarMetal(){
                 prompt('Pressione ENTER para jogar o dado.')
                 let dadoJogador = Math.ceil(Math.random() * 20);
                 let dadoMonstro = Math.ceil(Math.random() * 20);
-                if (dadoJogador >= 7){
+                if (dadoJogador >= 7 || dadoJogador > dadoMonstro){
                     vitoriaJogador++;
                 }else{
                     vitoriaMonstro++;                    
@@ -436,12 +462,15 @@ function procurarMetal(){
                 console.log(`Você sacou o phaser e ao acertar uma de suas longas pernas, percebeu que o monstro se desequilibrou. 
                 A partir daí, ficou facil... Após quebrar 9 de suas 12 pernas, assim que o bicho foi ao chão você mirou todos os tiros em sua parte mais frágil e o monstro foi derrotado.`);
                 console.log();
-                console.log(`Você conseguiu subir a montanha e recolher o que conseguia carregar de rochas, mas ainda será preciso 3 vezes mais que isso para cada grama de metal necessário.`);
+                console.log(`Você conseguiu subir a montanha e recolher o que conseguia carregar de rochas, mas ainda será preciso 2 vezes mais que isso para cada grama de metal necessário.`);
                 console.log();
                 console.log(`Ao sair daquela cadeia de montanhas você percebe que alguns pares de olhos ainda o espreitavam das profundezas da caverna...`)
                 heroi.tempo(6);
+                heroi.horasTrabalhadas += 6;
                 heroi.coletarPedras(3);
+                if (heroi.xp < 9){
                 heroi.xp += 2;
+                }
                 return 3;
             }else{
                 console.log();
@@ -466,6 +495,14 @@ function procurarMetal(){
                    return 2;
                 }
             }
+        }else if (opcao == 2){
+            heroi.tempo(3);
+            heroi.horasTrabalhadas += 3;
+            heroi.xp -= 2;
+            console.log();
+            console.log(`Você está de volta a nave, mas perdeu 2 pontos de XP pela falta de coragem!`);
+            prompt();
+            console.clear();
         }
     }
 }
@@ -513,7 +550,7 @@ function procurarComida(){
                 prompt('Pressione ENTER para jogar o dado.')
                 let dadoJogador = Math.ceil(Math.random() * 20);
                 let dadoAnimal = Math.ceil(Math.random() * 20);
-                if (dadoJogador >= 7){
+                if (dadoJogador >= 7 || dadoJogador > dadoAnimal){
                     vitoriaJogador++;
                 }else{
                     vitoriaAnimal++;                    
@@ -521,15 +558,18 @@ function procurarComida(){
                 console.log();
                 console.log(`Essa é a rodada ${i} você jogou ${dadoJogador} e o estranho animal jogou ${dadoAnimal}`);
             }
-            prompt();
-            console.clear();
+            // prompt();
+            // console.clear();
             if (vitoriaJogador > vitoriaAnimal){
                 console.log();
                 console.log(`Depois de alguns tiros o animal se assustou e saiu correndo ferido.`);
                 console.log();
                 console.log(`Você conseguiu encontrar algumas plantas para se alimentar e prosseguir em sua jornada de completar a missão e conseguir voltar para a Axiom.`);
                 heroi.tempo(4);
-                heroi.xp += 3;
+                heroi.horasTrabalhadas += 4;
+                if (heroi.xp < 10){
+                heroi.xp += 1;
+                }
             }else{
                 if (heroi.xp > 3){
                     console.log();
@@ -566,12 +606,13 @@ function procurarComida(){
             }
         }else{
             heroi.tempo(3);
+            heroi.horasTrabalhadas += 3;
             heroi.xp -= 2;
             console.log();
             console.log(`Você está de volta a nave, mas perdeu 2 pontos de XP pela falta de coragem!`);
         }
     }else{
-        console.log(`Você precisa estar forte para sobreviver e conseguir voltar. A melhor forma é se alimentando, mas cuidado com aqules animais estranhos!`);
+        console.log(`Você precisa estar forte para sobreviver e conseguir voltar. A melhor forma é se alimentando, mas cuidado com aqueles animais estranhos!`);
         console.log();
         prompt('Pressione ENTER para procurar comida.');
         prompt();
@@ -597,7 +638,7 @@ function procurarComida(){
                 prompt('Pressione ENTER para jogar o dado.')
                 let dadoJogador = Math.ceil(Math.random() * 20);
                 let dadoAnimal = Math.ceil(Math.random() * 20);
-                if (dadoJogador >= 7){
+                if (dadoJogador >= 7 || dadoJogador > dadoAnimal){
                     vitoriaJogador++;
                 }else{
                     vitoriaAnimal++;                    
@@ -613,7 +654,10 @@ function procurarComida(){
                 console.log();
                 console.log(`Você conseguiu encontrar algumas plantas para se alimentar e prosseguir em sua jornada de completar a missão e conseguir voltar para a Axiom.`);
                 heroi.tempo(4);
-                heroi.xp += 3;
+                heroi.horasTrabalhadas += 4;
+                if (heroi.xp < 10){
+                heroi.xp += 1;
+                }
             }else{
                 if (heroi.xp > 3){
                     console.log();
@@ -651,6 +695,7 @@ function procurarComida(){
             }            
         }else{
             heroi.tempo(3);
+            heroi.horasTrabalhadas += 3;
             heroi.xp -= 2;
             console.log();
             console.log(`Você está de volta a nave, mas perdeu 2 pontos de XP pela falta de coragem!`);
@@ -659,7 +704,7 @@ function procurarComida(){
 }
 
 function combustivelCheio(){
-    if (heroi.combustivel == 10){
+    if (heroi.combustivel >= 10){
         return true;
     }else{
         return false;
@@ -667,7 +712,7 @@ function combustivelCheio(){
 }
 
 function radioOK(){
-    if (heroi.radio == 10){
+    if (heroi.radio >= 10){
         return true;
     }else{
         return false;
@@ -675,7 +720,7 @@ function radioOK(){
 }
 
 function vidaCheia(){
-    if (heroi.xp == 10){
+    if (heroi.xp >= 10){
         return true;
     }else{
         return false;
@@ -760,8 +805,8 @@ function ato1(){
 }
 }
 
-let countVoltar = 0;
-let countSinalRadio = 0;
+
+
 
 ato1();
 while (true){
@@ -771,359 +816,13 @@ while (true){
         console.log(`Tente se alimentar mais antes de coletar os outros itens`);
         prompt(`Pressione ENTER para reiniciar.`);
         break inicio;
-    }else{    
-    countVoltar++;
-    countSinalRadio++;
-    
+    }else{           
     const combustivel = combustivelCheio();
     const radio = radioOK();
     const vida = vidaCheia();
 
-    if (combustivel == true){
-        if (countVoltar == 1){
-        console.clear();
-            prompt('Pressione ENTER para ver quais são as suas opções para sobreviver e completar a missão com sucesso.');
-        console.clear();
-        console.log(`[1] Procurar material orgânico decomposto.`);
-        console.log(`[2] Procurar rochas que contenham minerais para produzir a liga metálica da antena do rádio.`);
-        console.log(`[3] Procurar comida.`);
-        console.log(`[4] Verificar status.`);
-        console.log(`[5] Voltar a Axiom. (Combustível 100%)`)
-        console.log();
-
-        let opcao = +prompt(`Escolha uma das opções para prosseguir: `);
-        while (opcao != 1 && opcao != 2 && opcao != 3 && opcao != 4 && opcao != 5){
-            opcao = +prompt('Escolha uma opção válida para continuar: ');
-        }
-
-        if (opcao == 1){
-            let combustivel = procurarCombustivel();
-            if (combustivel == 1){
-                continue;
-            }else if (combustivel == 3){
-                if (heroi.horas >= 18){
-                    let dormir = heroi.dormir();
-                    if (dormir == true){               
-                    continue
-                    }
-                }else{            
-                    prompt();
-                    continue;
-                }
-            }else if (combustivel == 2){
-                break;
-            }
-        }else if (opcao == 2){
-            let metal = procurarMetal();
-            if (metal == 1){
-                continue;  
-            }else if(metal == 3){
-                if (heroi.horas >= 18){
-                    let dormir = heroi.dormir();
-                    if (dormir == true){               
-                    continue
-                    }
-                }else{            
-                    prompt();
-                    continue;
-                }
-            }else if (metal == 2){
-                break;
-            }
-        }else if (opcao == 3){
-            let comida = procurarComida();
-            if (comida == 1){
-                continue;  
-            }else if (comida == 3){
-                if (heroi.horas >= 18){
-                    let dormir = heroi.dormir();
-                    if (dormir == true){               
-                    continue
-                    }
-                }else{            
-                    prompt();
-                    continue;
-                }
-            }else if (comida == 2){
-                break;
-            }
-        }else if (opcao == 4){
-            verificarStatus();
-            continue;
-        }else if (opcao == 5){
-            console.clear();
-            console.log(`Parece que a nave já pode voar!`)
-            console.log();
-            console.log(`Você parte do planeta aos trancos e barrancos, mas finalmente consegue chegar à Axiom. Esperando uma volta calorosa por parte do comando da missão, o capitão apenas pegunta como era o planeta e porque estava de volta sem ao menos ter feito um contato pelo rádio antes.`);
-            console.log();
-            console.log(`recruta: Capitão, como o senhor já percebeu, a nave se acidentou e eu não tive como completar a missão!`);
-            console.log();
-            console.log(`capitão: Mas você voltou voando com ela, não voltou!? Pois se está tudo bem, trate de voltar ao planeta e completar a sua missão de exploração!`)
-            console.log();
-            console.log(`recruta: Mas capitão...`);
-            console.log();
-            console.log(`capitão: Ora recruta... veja pelo lado positivo! A nave ainda funciona e você está vivo! Finalize sua missão!`);
-            console.clear()
-            console.log(`Você perdeu 4 horas de voo e gastou 20% de combustível`);
-            prompt(`Pressione ENTER para finalizar a missão`);
-            heroi.tempo(4);
-            heroi.combustivel -= 2;
-            continue;
-        }
-            }else{
-                console.clear();
-                prompt('Pressione ENTER para ver quais são as suas opções para sobreviver e completar a missão com sucesso.');
-                console.clear();
-                console.log(`[1] Procurar material orgânico decomposto.`);
-                console.log(`[2] Procurar rochas que contenham minerais para produzir a liga metálica da antena do rádio.`);
-                console.log(`[3] Procurar comida.`);
-                console.log(`[4] Verificar status.`);
-                console.log(`[5] Voltar a Axiom. (Combustível 100%)`)
-                console.log();
-
-                let opcao = +prompt(`Escolha uma das opções para prosseguir: `);
-                while (opcao != 1 && opcao != 2 && opcao != 3 && opcao != 4 && opcao != 5){
-                    opcao = +prompt('Escolha uma opção válida para continuar: ');
-                }
-
-                if (opcao == 1){
-                    let combustivel = procurarCombustivel();
-                    if (combustivel == 1){
-                        continue;
-                    }else if (combustivel == 3){
-                        if (heroi.horas >= 18){
-                            let dormir = heroi.dormir();
-                            if (dormir == true){               
-                            continue
-                            }
-                        }else{            
-                            prompt();
-                            continue;
-                        }
-                    }else if (combustivel == 2){
-                        break;
-                    }
-                }else if (opcao == 2){
-                    let metal = procurarMetal();
-                    if (metal == 1){
-                        continue;  
-                    }else if(metal == 3){
-                        if (heroi.horas >= 18){
-                            let dormir = heroi.dormir();
-                            if (dormir == true){               
-                            continue
-                            }
-                        }else{            
-                            prompt();
-                            continue;
-                        }
-                    }else if (metal == 2){
-                        break;
-                    }
-                }else if (opcao == 3){
-                    let comida = procurarComida();
-                    if (comida == 1){
-                        continue;  
-                    }else if (comida == 3){
-                        if (heroi.horas >= 18){
-                            let dormir = heroi.dormir();
-                            if (dormir == true){               
-                            continue
-                            }
-                        }else{            
-                            prompt();
-                            continue;
-                        }
-                    }else if (comida == 2){
-                        break;
-                    }
-                }else if (opcao == 4){
-                    verificarStatus();
-                    continue;
-                }else if (opcao == 5){
-                    console.clear();
-                    console.log(`Parece que a nave já pode voar!`)
-                    console.log();
-                    console.log(`Mas você viu o que aconteceu da última vez né!?`);
-                    console.clear()
-                    console.log(`É melhor não arriscar ser jogado no espaço pelo capitão...`);
-                    prompt(`Pressione ENTER para finalizar a missão`);
-                    continue;
-                    }
-                }
-    }else if (radio == true){
-        if (countSinalRadio == 1){
-            console.clear();
-            prompt('Pressione ENTER para ver quais são as suas opções para sobreviver e completar a missão com sucesso.');
-            console.clear();
-            console.log(`[1] Procurar material orgânico decomposto.`);
-            console.log(`[2] Procurar rochas que contenham minerais para produzir a liga metálica da antena do rádio.`);
-            console.log(`[3] Procurar comida.`);
-            console.log(`[4] Verificar status.`);
-            console.log(`[5] Chamar o comando da Axiom pelo Radio. (Sinal de Rádio 100%)`)
-            console.log();
-    
-            let opcao = +prompt(`Escolha uma das opções para prosseguir: `);
-            while (opcao != 1 && opcao != 2 && opcao != 3 && opcao != 4 && opcao != 5){
-                opcao = +prompt('Escolha uma opção válida para continuar: ');
-            }    
-            if (opcao == 1){
-                let combustivel = procurarCombustivel();
-                if (combustivel == 1){
-                    continue;
-                }else if (combustivel == 3){
-                    if (heroi.horas >= 18){
-                        let dormir = heroi.dormir();
-                        if (dormir == true){               
-                        continue
-                        }
-                    }else{            
-                        prompt();
-                        continue;
-                    }
-                }else if (combustivel == 2){
-                    break;
-                }
-            }else if (opcao == 2){
-                let metal = procurarMetal();
-                if (metal == 1){
-                    continue;  
-                }else if(metal == 3){
-                    if (heroi.horas >= 18){
-                        let dormir = heroi.dormir();
-                        if (dormir == true){               
-                        continue
-                        }
-                    }else{            
-                        prompt();
-                        continue;
-                    }
-                }else if (metal == 2){
-                    break;
-                }
-            }else if (opcao == 3){
-                let comida = procurarComida();
-                if (comida == 1){
-                    continue;  
-                }else if (comida == 3){
-                    if (heroi.horas >= 18){
-                        let dormir = heroi.dormir();
-                        if (dormir == true){               
-                        continue
-                        }
-                    }else{            
-                        prompt();
-                        continue;
-                    }
-                }else if (comida == 2){
-                    break;
-                }
-            }else if (opcao == 4){
-                verificarStatus();
-                continue;
-            }else if (opcao == 5){
-                console.clear();
-                console.log(`Parece que o radio já pode ser consertado!`)
-                console.log();
-                console.log(`Recruta: Axiom... Axiom... aqui é ${heroi.nome}. Alguém na escuta?`);
-                console.log();
-                console.log(`Capitão: Recruta! Que bom ouvir a sua voz! Percebemos que você sofreu um acidente, mas achamos melhor não arriscar mandar outra nave e esta também se acidentar.`);
-                console.log();
-                console.log(`Recruta: capitão solicito resgate imediáto! A nave está avariada e demoraria demais para consertar com os recursos do planeta.`)
-                console.log();
-                console.log(`Capitão: Mas o planeta tem recursos para consertar a nave?`);
-                console.log();
-                console.log(`Recruta: Tem sim capitão!`);
-                console.log();
-                console.log(`Capitão: Pois então trate de consertar a nave e cumprir a sua missão de exploração. Só volte quando completar a missão!`);
-                console.log();
-                console.log(`Recruta: Não deveria ter falado que o planeta tem recursos...`)
-                prompt(`Pressione ENTER para finalizar a missão`);
-                heroi.tempo(1);
-                continue;
-            }
-        }else{
-            console.clear();
-            prompt('Pressione ENTER para ver quais são as suas opções para sobreviver e completar a missão com sucesso.');
-            console.clear();
-            console.log(`[1] Procurar material orgânico decomposto.`);
-            console.log(`[2] Procurar rochas que contenham minerais para produzir a liga metálica da antena do rádio.`);
-            console.log(`[3] Procurar comida.`);
-            console.log(`[4] Verificar status.`);
-            console.log(`[5] Chamar o comando da Axiom pelo Radio. (Sinal de Rádio 100%)`)
-            console.log();
-    
-            let opcao = +prompt(`Escolha uma das opções para prosseguir: `);
-            while (opcao != 1 && opcao != 2 && opcao != 3 && opcao != 4 && opcao != 5){
-                opcao = +prompt('Escolha uma opção válida para continuar: ');
-            }
-    
-            if (opcao == 1){
-                let combustivel = procurarCombustivel();
-                if (combustivel == 1){
-                    continue;
-                }else if (combustivel == 3){
-                    if (heroi.horas >= 18){
-                        let dormir = heroi.dormir();
-                        if (dormir == true){               
-                        continue
-                        }
-                    }else{            
-                        prompt();
-                        continue;
-                    }
-                }else if (combustivel == 2){
-                    break;
-                }
-            }else if (opcao == 2){
-                let metal = procurarMetal();
-                if (metal == 1){
-                    continue;  
-                }else if(metal == 3){
-                    if (heroi.horas >= 18){
-                        let dormir = heroi.dormir();
-                        if (dormir == true){               
-                        continue
-                        }
-                    }else{            
-                        prompt();
-                        continue;
-                    }
-                }else if (metal == 2){
-                    break;
-                }
-            }else if (opcao == 3){
-                let comida = procurarComida();
-                if (comida == 1){
-                    continue;  
-                }else if (comida == 3){
-                    if (heroi.horas >= 18){
-                        let dormir = heroi.dormir();
-                        if (dormir == true){               
-                        continue
-                        }
-                    }else{            
-                        prompt();
-                        continue;
-                    }
-                }else if (comida == 2){
-                    break;
-                }
-            }else if (opcao == 4){
-                verificarStatus();
-                continue;
-            }else if (opcao == 5){
-                console.clear();
-                console.log(`Parece que o sinal do rádio já esta OK!`)
-                console.log();
-                console.log(`Mas você ouviu o que o capitão falou né!?`);
-                console.clear()
-                console.log(`É melhor não arriscar ser motivo de piada pelo comando da Axiom...`);
-                prompt(`Pressione ENTER para finalizar a missão`);
-                continue;
-                }
-            }
-    }else if (combustivel == true && radio == true){   
+      
+    if (combustivel == true && radio == true){   
             console.clear();     
             prompt('Pressione ENTER para ver quais são as suas opções para sobreviver e completar a missão com sucesso.');
             console.clear();
@@ -1201,7 +900,7 @@ while (true){
                     console.log(`Você já conseguiu consertar o rádio da nave, conseguiu colocar combustivel para retornar e sobreviveu a todos os perigos que este planeta colocou no seu caminho.`);
                     console.log();
                     console.log(`Durante sua jornada de sobrevivencia, você já completou sua missão de explorar o planeta.`);
-                    prompt('ENTER')
+                    prompt();
                     console.clear();
                     console.log(`O problema é que durante a noite você não vai ter visibilidade o suficiente para fazer decolagem.`);
                     console.log();
@@ -1212,40 +911,37 @@ while (true){
                     console.log(`Hora da decolagem!`);
                     console.log();
                     console.log(`Nem precisa de contagem regressiva...`);
-                    prompt('ENTER')
+                    prompt();
                     console.clear();
                     console.log(`Ufa! Você saiu do planeta e a viagem está indo bem!`);
-                    prompt('ENTER')
+                    prompt();
                     console.clear();
                     console.log(`Você chegou a Axiom e dessa vez foi muito bem recebido pela tripulação.`)
                     console.log();
-                    console.log(`Capitão: Recruta! Seja bem vido de volta!
-                    Como foi a missão? Podemos estabelecer uma base por lá para coletar suprimentos?`);
+                    console.log(`Capitão: Recruta! Seja bem vido de volta! Como foi a missão? Podemos estabelecer uma base por lá para coletar suprimentos?`);
                     console.log();
                     console.log(`Recruta: Apesar dos desafios, o planeta é habitavel sim, tem formas de vida, mas algumas delas são bem perigosas.`);
                     console.log();
                     console.log(`Capitão: Após essa missão e depois de tudo o que você passou, merece ser promovido de posto!`);
-                    prompt('ENTER')
+                    prompt();
                     console.clear();
                     console.log(`Capitão: Como é seu nome mesmo?`)
                     console.log();
                     console.log(heroi.nome);
                     console.log();
-                    console.log(`capitão: Que seja, recruta...
-                    A partir desse momento, você passará a ser auxiliar do assiste de assuntos gerais da nave! Parabéns pela promoção!`)
+                    console.log(`capitão: Que seja, recruta... A partir desse momento, você passará a ser auxiliar do assiste de assuntos gerais da nave! Parabéns pela promoção!`)
                     console.log(`...cara de paisagem...`);
-                    prompt('ENTER')
+                    prompt();
                     console.clear();
                     console.log(`Recruta: Capitão, antes de assumir o meu novo posto, posso fazer uma pergunta ao senhor?`);
                     console.log();
                     console.log(`Capitão: Claro que pode recruta!`);
-                    prompt('ENTER')
+                    prompt();
                     console.clear();
-                    console.log(`Recruta: Quando o senhor me chamou, perguntou meu nome, mas preferiu me chamar apenas de recruta para não se apegar por conta do que aconteceu antes.
-                    O senhor pode me contar o que aconteceu com o recruta anterior?`);
+                    console.log(`Recruta: Quando o senhor me chamou, perguntou meu nome, mas preferiu me chamar apenas de recruta para não se apegar por conta do que aconteceu antes. O senhor pode me contar o que aconteceu com o recruta anterior?`);
                     console.log();
                     console.log(`Capitão: Claro recruta!`);
-                    prompt('ENTER')
+                    prompt();
                     console.clear();
                     console.log(`Ele se casou, mudou de trabalho e nunca mais entrou em contato!`);
                     console.log();
@@ -1257,7 +953,6 @@ while (true){
                     console.log();
                     console.log(`[1] Jogar novamente.`);
                     console.log(`[2] Continuar.`)
-
                     let opcao = +prompt(`Digite a sua opção: `);
                     if (opcao == 1){
                         continue inicio;  
@@ -1266,7 +961,7 @@ while (true){
                         console.log();
                         console.log(`FIM`);
                         prompt(`Sair do jogo (ENTER).`);
-                        break;
+                        break inicio;
                     }                
                 }else{
                     console.clear();
@@ -1275,7 +970,372 @@ while (true){
                     prompt(`Pressione ENTER para coletar comida para a viagem.`)
                     continue; 
                 }                
+            } 
+    }else if (combustivel == true && radio == false){
+        countVoltar++;        
+        if (countVoltar == 1){
+        console.clear();
+            prompt('Pressione ENTER para ver quais são as suas opções para sobreviver e completar a missão com sucesso.');
+        console.clear();
+        console.log(`[1] Procurar material orgânico decomposto.`);
+        console.log(`[2] Procurar rochas que contenham minerais para produzir a liga metálica da antena do rádio.`);
+        console.log(`[3] Procurar comida.`);
+        console.log(`[4] Verificar status.`);
+        console.log(`[5] Voltar a Axiom. (Combustível 100%)`)
+        console.log();
+
+        let opcao = +prompt(`Escolha uma das opções para prosseguir: `);
+        while (opcao != 1 && opcao != 2 && opcao != 3 && opcao != 4 && opcao != 5){
+            opcao = +prompt('Escolha uma opção válida para continuar: ');
+        }
+
+        if (opcao == 1){
+            let combustivel = procurarCombustivel();
+            if (combustivel == 1){
+                continue;
+            }else if (combustivel == 3){
+                if (heroi.horasTrabalhadas >= 18){
+                    let dormir = heroi.dormir();
+                    if (dormir == true){  
+                        prompt();             
+                    continue
+                    }
+                }else{            
+                    prompt();
+                    continue;
+                }
+            }else if (combustivel == 2){
+                break;
             }
+        }else if (opcao == 2){
+            let metal = procurarMetal();
+            if (metal == 1){
+                continue;  
+            }else if(metal == 3){
+                if (heroi.horasTrabalhadas >= 18){
+                    let dormir = heroi.dormir();
+                    if (dormir == true){  
+                        prompt();             
+                    continue
+                    }
+                }else{            
+                    prompt();
+                    continue;
+                }
+            }else if (metal == 2){
+                break;
+            }
+        }else if (opcao == 3){
+            let comida = procurarComida();
+            if (comida == 1){
+                continue;  
+            }else if (comida == 3){
+                if (heroi.horasTrabalhadas >= 18){
+                    let dormir = heroi.dormir();
+                    if (dormir == true){ 
+                        prompt();              
+                    continue
+                    }
+                }else{            
+                    prompt();
+                    continue;
+                }
+            }else if (comida == 2){
+                break;
+            }
+        }else if (opcao == 4){
+            verificarStatus();
+            prompt();
+            continue;
+        }else if (opcao == 5){
+            console.clear();
+            console.log(`Parece que a nave já pode voar!`)
+            console.log();
+            console.log(`Você parte do planeta aos trancos e barrancos, mas finalmente consegue chegar à Axiom. Esperando uma volta calorosa por parte do comando da missão, o capitão apenas pegunta como era o planeta e porque estava de volta sem ao menos ter feito um contato pelo rádio antes.`);
+            console.log();
+            console.log(`recruta: Capitão, como o senhor já percebeu, a nave se acidentou e eu não tive como completar a missão!`);
+            console.log();
+            console.log(`capitão: Mas você voltou voando com ela, não voltou!? Pois se está tudo bem, trate de voltar ao planeta e completar a sua missão de exploração!`)
+            console.log();
+            console.log(`recruta: Mas capitão...`);
+            console.log();
+            console.log(`capitão: Ora recruta... veja pelo lado positivo! A nave ainda funciona e você está vivo! Finalize sua missão!`);
+            console.log();
+            console.log(`Você perdeu 4 horas de voo e gastou 20% de combustível`);
+            prompt(`Pressione ENTER para finalizar a missão`);
+            console.clear();
+            heroi.tempo(4);
+            heroi.combustivel -= 2;
+            continue;
+        }
+    }else{        
+                prompt('Pressione ENTER para ver quais são as suas opções para sobreviver e completar a missão com sucesso.');
+                console.clear();
+                console.log(`[1] Procurar material orgânico decomposto.`);
+                console.log(`[2] Procurar rochas que contenham minerais para produzir a liga metálica da antena do rádio.`);
+                console.log(`[3] Procurar comida.`);
+                console.log(`[4] Verificar status.`);
+                console.log(`[5] Voltar a Axiom. (Combustível 100%)`)
+                console.log();
+
+                let opcao = +prompt(`Escolha uma das opções para prosseguir: `);
+                while (opcao != 1 && opcao != 2 && opcao != 3 && opcao != 4 && opcao != 5){
+                    opcao = +prompt('Escolha uma opção válida para continuar: ');
+                }
+
+                if (opcao == 1){
+                    let combustivel = procurarCombustivel();
+                    if (combustivel == 1){
+                        continue;
+                    }else if (combustivel == 3){
+                        if (heroi.horasTrabalhadas >= 18){
+                            let dormir = heroi.dormir();
+                            if (dormir == true){  
+                                prompt();             
+                            continue
+                            }
+                        }else{            
+                            prompt();
+                            continue;
+                        }
+                    }else if (combustivel == 2){
+                        break;
+                    }
+                }else if (opcao == 2){
+                    let metal = procurarMetal();
+                    if (metal == 1){
+                        continue;  
+                    }else if(metal == 3){
+                        if (heroi.horasTrabalhadas >= 18){
+                            let dormir = heroi.dormir();
+                            if (dormir == true){  
+                                prompt();             
+                            continue
+                            }
+                        }else{            
+                            prompt();
+                            continue;
+                        }
+                    }else if (metal == 2){
+                        break;
+                    }
+                }else if (opcao == 3){
+                    let comida = procurarComida();
+                    if (comida == 1){
+                        continue;  
+                    }else if (comida == 3){
+                        if (heroi.horasTrabalhadas >= 18){
+                            let dormir = heroi.dormir();
+                            if (dormir == true){ 
+                                prompt();              
+                            continue
+                            }
+                        }else{            
+                            prompt();
+                            continue;
+                        }
+                    }else if (comida == 2){
+                        break;
+                    }
+                }else if (opcao == 4){
+                    verificarStatus();
+                    prompt();
+                    continue;
+                }else if (opcao == 5){                    
+                    console.log();
+                    console.log(`Parece que a nave já pode voar!`)
+                    console.log();
+                    console.log(`Mas você viu o que aconteceu da última vez né!?`);
+                    console.log()
+                    console.log(`É melhor não arriscar ser jogado no espaço pelo capitão...`);
+                    prompt(`Pressione ENTER para finalizar a missão`);
+                    continue;
+                    }
+                }
+    }else if (radio == true && combustivel == false){
+        countSinalRadio++;
+        if (countSinalRadio == 1){
+            console.clear();
+            prompt('Pressione ENTER para ver quais são as suas opções para sobreviver e completar a missão com sucesso.');
+            console.clear();
+            console.log(`[1] Procurar material orgânico decomposto.`);
+            console.log(`[2] Procurar rochas que contenham minerais para produzir a liga metálica da antena do rádio.`);
+            console.log(`[3] Procurar comida.`);
+            console.log(`[4] Verificar status.`);
+            console.log(`[5] Chamar o comando da Axiom pelo Radio. (Sinal de Rádio 100%)`)
+            console.log();
+    
+            let opcao = +prompt(`Escolha uma das opções para prosseguir: `);
+            while (opcao != 1 && opcao != 2 && opcao != 3 && opcao != 4 && opcao != 5){
+                opcao = +prompt('Escolha uma opção válida para continuar: ');
+            }    
+            if (opcao == 1){
+                let combustivel = procurarCombustivel();
+                if (combustivel == 1){
+                    continue;
+                }else if (combustivel == 3){
+                    if (heroi.horasTrabalhadas >= 18){
+                        let dormir = heroi.dormir();
+                        if (dormir == true){  
+                            prompt();             
+                        continue
+                        }
+                    }else{            
+                        prompt();
+                        continue;
+                    }
+                }else if (combustivel == 2){
+                    break;
+                }
+            }else if (opcao == 2){
+                let metal = procurarMetal();
+                if (metal == 1){
+                    continue;  
+                }else if(metal == 3){
+                    if (heroi.horasTrabalhadas >= 18){
+                        let dormir = heroi.dormir();
+                        if (dormir == true){ 
+                            prompt();              
+                        continue
+                        }
+                    }else{            
+                        prompt();
+                        continue;
+                    }
+                }else if (metal == 2){
+                    break;
+                }
+            }else if (opcao == 3){
+                let comida = procurarComida();
+                if (comida == 1){
+                    continue;  
+                }else if (comida == 3){
+                    if (heroi.horasTrabalhadas >= 18){
+                        let dormir = heroi.dormir();
+                        if (dormir == true){  
+                            prompt();             
+                        continue
+                        }
+                    }else{            
+                        prompt();
+                        continue;
+                    }
+                }else if (comida == 2){
+                    break;
+                }
+            }else if (opcao == 4){
+                verificarStatus();
+                prompt();
+                continue;
+            }else if (opcao == 5){
+                console.clear();
+                console.log(`Parece que o radio já pode ser consertado!`)
+                console.log();
+                console.log(`Recruta: Axiom... Axiom... aqui é ${heroi.nome}. Alguém na escuta?`);
+                console.log();
+                console.log(`Capitão: Recruta! Que bom ouvir a sua voz! Percebemos que você sofreu um acidente, mas achamos melhor não arriscar mandar outra nave e esta também se acidentar.`);
+                console.log();
+                console.log(`Recruta: capitão solicito resgate imediáto! A nave está avariada e demoraria demais para consertar com os recursos do planeta.`)
+                console.log();
+                console.log(`Capitão: Mas o planeta tem recursos para consertar a nave?`);
+                console.log();
+                console.log(`Recruta: Tem sim capitão!`);
+                console.log();
+                console.log(`Capitão: Pois então trate de consertar a nave e cumprir a sua missão de exploração. Só volte quando completar a missão!`);
+                console.log();
+                console.log(`Recruta: Não deveria ter falado que o planeta tem recursos...`)
+                prompt(`Pressione ENTER para finalizar a missão`);
+                console.clear();
+                heroi.tempo(1);
+                continue;
+            }
+        }else{
+            console.clear();
+            prompt('Pressione ENTER para ver quais são as suas opções para sobreviver e completar a missão com sucesso.');
+            console.clear();
+            console.log(`[1] Procurar material orgânico decomposto.`);
+            console.log(`[2] Procurar rochas que contenham minerais para produzir a liga metálica da antena do rádio.`);
+            console.log(`[3] Procurar comida.`);
+            console.log(`[4] Verificar status.`);
+            console.log(`[5] Chamar o comando da Axiom pelo Radio. (Sinal de Rádio 100%)`)
+            console.log();
+    
+            let opcao = +prompt(`Escolha uma das opções para prosseguir: `);
+            while (opcao != 1 && opcao != 2 && opcao != 3 && opcao != 4 && opcao != 5){
+                opcao = +prompt('Escolha uma opção válida para continuar: ');
+            }
+    
+            if (opcao == 1){
+                let combustivel = procurarCombustivel();
+                if (combustivel == 1){
+                    continue;
+                }else if (combustivel == 3){
+                    if (heroi.horasTrabalhadas >= 18){
+                        let dormir = heroi.dormir();
+                        if (dormir == true){ 
+                            prompt();              
+                        continue
+                        }
+                    }else{            
+                        prompt();
+                        continue;
+                    }
+                }else if (combustivel == 2){
+                    break;
+                }
+            }else if (opcao == 2){
+                let metal = procurarMetal();
+                if (metal == 1){
+                    continue;  
+                }else if(metal == 3){
+                    if (heroi.horasTrabalhadas >= 18){
+                        let dormir = heroi.dormir();
+                        if (dormir == true){   
+                            prompt();            
+                        continue
+                        }
+                    }else{            
+                        prompt();
+                        continue;
+                    }
+                }else if (metal == 2){
+                    break;
+                }
+            }else if (opcao == 3){
+                let comida = procurarComida();
+                if (comida == 1){
+                    continue;  
+                }else if (comida == 3){
+                    if (heroi.horasTrabalhadas >= 18){
+                        let dormir = heroi.dormir();
+                        if (dormir == true){ 
+                            prompt();              
+                        continue
+                        }
+                    }else{            
+                        prompt();
+                        continue;
+                    }
+                }else if (comida == 2){
+                    break;
+                }
+            }else if (opcao == 4){
+                verificarStatus();
+                prompt();
+                continue;
+            }else if (opcao == 5){
+                console.clear();
+                console.log(`Parece que o sinal do rádio já esta OK!`)
+                console.log();
+                console.log(`Mas você ouviu o que o capitão falou né!?`);
+                console.clear()
+                console.log(`É melhor não arriscar ser motivo de piada pelo comando da Axiom...`);
+                prompt(`Pressione ENTER para finalizar a missão`);
+                continue;
+                }
+            }
+       
+            
 
     }else{   
         console.clear();    
@@ -1296,9 +1356,10 @@ while (true){
             if (combustivel == 1){
                 continue;
             }else if (combustivel == 3){
-                if (heroi.horas >= 18){
+                if (heroi.horasTrabalhadas >= 18){
                     let dormir = heroi.dormir();
-                    if (dormir == true){               
+                    if (dormir == true){ 
+                        prompt();              
                     continue
                     }
                 }else{            
@@ -1313,9 +1374,10 @@ while (true){
             if (metal == 1){
                 continue;  
             }else if(metal == 3){
-                if (heroi.horas >= 18){
+                if (heroi.horasTrabalhadas >= 18){
                     let dormir = heroi.dormir();
-                    if (dormir == true){               
+                    if (dormir == true){   
+                        prompt();            
                     continue
                     }
                 }else{            
@@ -1330,9 +1392,10 @@ while (true){
             if (comida == 1){
                 continue;  
             }else if (comida == 3){
-                if (heroi.horas >= 18){
+                if (heroi.horasTrabalhadas >= 18){
                     let dormir = heroi.dormir();
-                    if (dormir == true){               
+                    if (dormir == true){
+                        prompt();               
                     continue;
                     }
                 }else{            
