@@ -760,7 +760,6 @@ function procurarComida(){
     }
     }
     }
-}
 
 function combustivelCheio(){
     if (heroi.combustivel >= 10){
@@ -1468,9 +1467,8 @@ while (true){
         }
     }
 }
-}   
-
-
+}
+}
 
 //Fernando Carratti
 //https://github.com/FernandoCarratti
