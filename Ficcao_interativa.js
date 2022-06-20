@@ -13,7 +13,7 @@ Infelizmente muitas vidas foram perdidas, de ambos os lados da guerra e também 
 se envolvendo no conflito.
 
 A partir de agora, por uma decisão estratégica, o capitão decidiu que ao invés de chegar aos próximos planetas com toda a aquipe,
-ele enviaria um tripulante de baixa patente para fazer o reconhecimento da área antes de de descer com uma equipe inteira de exploração.
+ele enviaria um tripulante de baixa patente para fazer o reconhecimento da área antes de descer com uma equipe inteira de exploração.
 
 Após ser informado pelo sr. Ulrich de que estavam a apenas 2 dias de distância de um planeta ainda desconhecido, mas que pelos sensores,
 era possível afirmar que era um planeta com possiveis formas de vida.
@@ -791,7 +791,7 @@ inicioMissao();
 prompt('Pressione ENTER para continuar.');
 console.clear();
 
-console.log(`É chegado o memento da missão!`);
+console.log(`É chegado o momento da missão!`);
 console.log();
 prompt('Pressione ENTER para o lançamento.');
 console.clear();
