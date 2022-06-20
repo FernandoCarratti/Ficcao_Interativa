@@ -158,6 +158,17 @@ function inicioMissao(){
     }
     heroi.dias += 2;
 }
+
+function verificarInimigo(){
+    prompt(`Pressione ENTER para rolar os dados.`);
+let dados = Math.ceil(Math.random() * 6);
+if (dados > 3){
+    return true;
+}else{
+    return false;
+}
+} 
+
 let materialOrganico = 0;
 function procurarCombustivel(){
     materialOrganico++
@@ -247,8 +258,10 @@ function procurarCombustivel(){
         console.log();
         prompt('Pressione ENTER para recolher o composto orgânico.');
         console.log();
-        console.log(`Apesar da aparencia "fofinha", aqueles animais são pequenos "demônios" e pode te atacar.`);
+        console.log(`Apesar da aparencia "fofinha", aqueles animais são pequenos "demônios" e podem te atacar.`);
         console.log();
+        let verificaInimigo = verificarInimigo();
+        if (verificaInimigo == true){
         console.log(`[1] Enfrentar uma orda de monstrengos.`);
         console.log(`[2] Voltar outra hora para ver se aqueles bichos já foram embora. `);
         console.log();
@@ -323,6 +336,21 @@ function procurarCombustivel(){
             console.log(`Você está de volta a nave, mas perdeu 2 pontos de XP pela falta de coragem!`); 
             console.log();           
         }
+    }else{
+        console.log(`Para pegar mais composto orgânico para a produção de combustivel você deve voltar a região dos pântanos.`);
+        console.log();        
+        console.log(`Apesar da aparencia "fofinha", aqueles animais são pequenos "demônios" e podem te atacar.`);
+        console.log();
+        prompt('Pressione ENTER para recolher o composto orgânico.');
+        console.log();
+        console.log(`Dessa vez você conseguiu recolher material orgânico tranquilo!`)
+        console.log();
+        console.log(`Aquelas criaturinhas asquerosas não estavam no pântano.`);
+        heroi.tempo(4);
+                heroi.horasTrabalhadas += 4;
+                heroi.coletarOrganico(3);                                       
+                return 3;
+    }
     }
 }
 let pedras = 0;
@@ -425,6 +453,8 @@ function procurarMetal(){
         console.log();
         console.log(`Aparentemente essas criaturas nunca dormem. Por isso muito cuidado para conseguir escalar a montanha e não ser pego.`);
         console.log();
+        let verificaInimigo = verificarInimigo();
+        if (verificaInimigo == true){
         console.log(`[1] Enfrentar o monstro.`);
         console.log(`[2] retornar para a nave e tentar voltar para as montanhas em outro momento.`);
         console.log();
@@ -504,6 +534,19 @@ function procurarMetal(){
             prompt();
             console.clear();
         }
+    }else{
+        console.log(`Aparentemente essas criaturas nunca dormem. Por isso muito cuidado para conseguir escalar a montanha e não ser pego.`);
+        console.log();      
+        prompt('Pressione ENTER para recolher o composto orgânico.');
+        console.log();
+        console.log(`Dessa vez você conseguiu recolher as rochas mais tranquilamente!`)
+        console.log();
+        console.log(`Aqueles monstros parecidos com um grushteniak de Skirvatzen não estavam acordados.`);
+        heroi.tempo(4);
+                heroi.horasTrabalhadas += 4;
+                heroi.coletarOrganico(3);                                       
+                return 3;
+    }
     }
 }
 
@@ -617,6 +660,8 @@ function procurarComida(){
         prompt('Pressione ENTER para procurar comida.');
         prompt();
             console.clear();
+            let verificaInimigo = verificarInimigo();
+        if (verificaInimigo == true){
         console.log(`Esses animais são duros na queda, mas também se assustam facilmente`);
         console.log();
         console.log(`[1] Enfrentar o animal estranho.`);
@@ -700,6 +745,20 @@ function procurarComida(){
             console.log();
             console.log(`Você está de volta a nave, mas perdeu 2 pontos de XP pela falta de coragem!`);
         }
+    }else{
+        console.log(`Aparentemente aquele animal estranho não estava na floresta no momento que você foi procurar comida. Que bom!`);
+        console.log();      
+        prompt('Pressione ENTER para recolher o composto orgânico.');
+        console.log();
+        console.log(`Dessa vez você conseguiu se alimentar tranquilamente!`)
+        console.log();
+        console.log(`Aquele animal esquisito devia estar no ninho..`);
+        heroi.tempo(4);
+                heroi.horasTrabalhadas += 4;
+                heroi.coletarOrganico(3);                                       
+                return 3;
+    }
+    }
     }
 }
 
@@ -804,9 +863,6 @@ function ato1(){
        }
 }
 }
-
-
-
 
 ato1();
 while (true){
