@@ -9,6 +9,7 @@ while (true){
     console.log();
     console.log(`...após 2 longos anos no espaço a tripulação da nave Axiom segue fazendo exploração e novas descobertas de planetas e civilizações a cada nova parada no espaço sideral.
 algumas bem sucedidas, outras nem tanto, como a ultima vez em que pararam em um planeta e se depararam com uma guerra entre nações desse planeta.
+
 Infelizmente muitas vidas foram perdidas, de ambos os lados da guerra e também de membros da tripulação da nave que acabaram
 se envolvendo no conflito.
 
@@ -147,14 +148,14 @@ function inicioMissao(){
         heroi.xp += 2;
         console.log(`capitão: Muito bem! Você tem 2 dias para se preparar. Está dispensado por enquanto!`);
         console.log();
-        console.log(`Você ganhou 2 pontos extra de XP pela coragem!`);
+        console.log(`Você ganhou 2 pontos extra de XP pela coragem!`.green);
     }else{
         heroi.xp -= 2;
         console.log(`Recruta: Mas capitão... Eu não sei se sou o mais indicado para este tipo de missão!`);
         console.log();
         console.log(`Capitão: Tenha coragem recruta! Em 2 dias você vai descer naquele planeta. Esteja preparado!`);  
         console.log();
-        console.log(`Você perdeu 2 pontos de XP pela falta de coragem!`);      
+        console.log(`Você perdeu 2 pontos de vida pela falta de coragem!`.red);      
     }
     heroi.dias += 2;
 }
@@ -333,7 +334,7 @@ function procurarCombustivel(){
             heroi.horasTrabalhadas += 3;
             heroi.xp -= 2;
             console.log();
-            console.log(`Você está de volta a nave, mas perdeu 2 pontos de XP pela falta de coragem!`); 
+            console.log(`Você está de volta a nave, mas perdeu 2 pontos de vida pela falta de coragem!`.red); 
             console.log();           
         }
     }else{
@@ -530,7 +531,7 @@ function procurarMetal(){
             heroi.horasTrabalhadas += 3;
             heroi.xp -= 2;
             console.log();
-            console.log(`Você está de volta a nave, mas perdeu 2 pontos de XP pela falta de coragem!`);
+            console.log(`Você está de volta a nave, mas perdeu 2 pontos de vida pela falta de coragem!`.red);
             prompt();
             console.clear();
         }
@@ -544,7 +545,7 @@ function procurarMetal(){
         console.log(`Aqueles monstros parecidos com um grushteniak de Skirvatzen não estavam acordados.`);
         heroi.tempo(4);
                 heroi.horasTrabalhadas += 4;
-                heroi.coletarOrganico(3);                                       
+                heroi.coletarPedras(3);                                       
                 return 3;
     }
     }
@@ -743,7 +744,7 @@ function procurarComida(){
             heroi.horasTrabalhadas += 3;
             heroi.xp -= 2;
             console.log();
-            console.log(`Você está de volta a nave, mas perdeu 2 pontos de XP pela falta de coragem!`);
+            console.log(`Você está de volta a nave, mas perdeu 2 pontos de vida pela falta de coragem!`.red);
         }
     }else{
         console.log(`Aparentemente aquele animal estranho não estava na floresta no momento que você foi procurar comida. Que bom!`);
@@ -754,8 +755,10 @@ function procurarComida(){
         console.log();
         console.log(`Aquele animal esquisito devia estar no ninho..`);
         heroi.tempo(4);
-                heroi.horasTrabalhadas += 4;
-                heroi.coletarOrganico(3);                                       
+        if (heroi.xp < 10){
+            heroi.xp += 1;
+            }
+            heroi.horasTrabalhadas += 4;                                                   
                 return 3;
     }
     }
@@ -803,8 +806,9 @@ console.log();
 
 console.log(`O lançamento ocorreu de maneira tranquila.`);
 console.log();
-console.log(`Quando a nave começa a entrar na atmosfera é repentinamente atingida por algo. Todos os alarmes estão soando. Alerta! Alerta! Alert...`);
+console.log(`Quando a nave começa a entrar na atmosfera é repentinamente atingida por algo.`);
 console.log();
+console.log(`Todos os alarmes estão soando. Alerta! Alerta! Alert...`.red)
 prompt();
 console.clear();
 
@@ -1000,7 +1004,7 @@ while (true){
                     console.clear();
                     console.log(`Ele se casou, mudou de trabalho e nunca mais entrou em contato!`);
                     console.log();
-                    console.log(`¯\_( ͡° ͜ʖ ͡°)_/¯`)
+                    console.log(`¯\_( ͡° ͜ʖ ͡°)_/¯`.yellow)
                     console.log();
                     prompt(`Pressione ENTER para continuar`);
                     console.clear();
@@ -1116,7 +1120,7 @@ while (true){
             console.log();
             console.log(`capitão: Ora recruta... veja pelo lado positivo! A nave ainda funciona e você está vivo! Finalize sua missão!`);
             console.log();
-            console.log(`Você perdeu 4 horas de voo e gastou 20% de combustível`);
+            console.log(`Você perdeu 4 horas de voo e gastou 20% de combustível`.yellow);
             prompt(`Pressione ENTER para finalizar a missão`);
             console.clear();
             heroi.tempo(4);
@@ -1299,6 +1303,7 @@ while (true){
                 console.log(`Capitão: Pois então trate de consertar a nave e cumprir a sua missão de exploração. Só volte quando completar a missão!`);
                 console.log();
                 console.log(`Recruta: Não deveria ter falado que o planeta tem recursos...`)
+                console.log();
                 prompt(`Pressione ENTER para finalizar a missão`);
                 console.clear();
                 heroi.tempo(1);
@@ -1385,12 +1390,11 @@ while (true){
                 console.log(`Mas você ouviu o que o capitão falou né!?`);
                 console.clear()
                 console.log(`É melhor não arriscar ser motivo de piada pelo comando da Axiom...`);
+                console.log();
                 prompt(`Pressione ENTER para finalizar a missão`);
                 continue;
                 }
-            }
-       
-            
+            }                  
 
     }else{   
         console.clear();    
